@@ -1,9 +1,19 @@
-# Browser prototype workspace
+# Moon Goons browser prototype — 0.2
 
-Reserved for P0 implementation. This is not a runnable prototype yet.
+The first playable solo mission uses the actual Rapier physics world for movement, cargo, extraction, and banking. Render/input frame rates are separated from the fixed 60 Hz simulation.
 
-First task: build a movement/hauling laboratory with a third-person camera, one scientist capsule, fixed-step low gravity, one dense cargo core, force-limited grabbing, and safe recovery. Use [GDD requirements](../GDD.md) MOVE-01, CAM-01, PHYS-01, and GRAB-01.
+```sh
+npm ci
+npm run dev
+npm test
+npm run build
+npm run preview
+```
 
-Choose compatible pinned TypeScript/Three.js/Rapier/Vite versions during that task. Add package scripts and a lockfile only when they actually run. Keep assets local and use relative paths so the future distribution can be served from a repository subpath.
+Source responsibilities: `content` defines tuning and resource types; `core` owns payout/heat/capacity rules; `simulation` owns the physics world and mission state; `presentation` owns procedural art/camera; `platform` owns saves/audio; `ui` owns styling; `main.ts` coordinates browser input and screens. Server/shared placeholders remain future P1 work.
 
-Module folders reserve core, simulation, gameplay, content, presentation, UI, and platform responsibilities. Do not implement multiplayer transport directly inside visual components.
+Tests exercise the real physics route for ore/glass/core, jumping/recall, heat recovery, deadline locking, manifest conservation, reward idempotency, and invalid save rejection. They do not substitute for human feel testing. Test waypoints use walking inputs and physics rather than teleporting cargo into the ship; explicit teleporting is restricted to the out-of-bounds recovery fixture.
+
+Development-only `?qa=route` shows a button that replays a one-sample harvest-and-bank mission through the same input/simulation path and results UI. It is removed from the production build. Production has no mission-mutation console API.
+
+Rendering is built from code-generated meshes and canvas labels; no asset download is required. The static distribution includes the physics engine and renderer. Use HTTP(S), not direct `file://` loading.

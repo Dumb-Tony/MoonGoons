@@ -16,3 +16,6 @@ Recheck versions, licensing, APIs, and platform requirements when implementing. 
 ## Asset register
 
 No runtime art, audio, fonts, or third-party code is included in M0. Before adding an asset, record path, title, creator/source URL, license or explicit permission, acquisition date, modifications, export settings, and attribution obligations. Public repository visibility alone does not grant reuse rights. No project-wide open-source license is selected in this milestone.
+
+## Prototype 0.2 assets and libraries
+All terrain, ship, astronaut, cargo meshes, labels, icons, and sound effects are authored in source for this project. No external art/audio files were imported. Runtime libraries are pinned in prototype/package-lock.json: Three.js (MIT), Rapier JavaScript package (Apache-2.0), Vite and TypeScript development tooling; inspect each installed package license before redistribution. The public bundle includes its library license notices where emitted by tooling. No service credentials are needed.

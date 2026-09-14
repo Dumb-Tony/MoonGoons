@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {bankItem,itemReward,heatStep,fitsBay,carrySpeed} from '../src/core/rules.ts';
+import {award,validateProfile,emptyProfile} from '../src/platform/save.ts';
+test('manifest pays condition-adjusted bible fixture exactly once',()=>{const m=[];for(const [id,k,q] of [['a','ore',1],['b','ore',1],['c','glass',.8],['d','core',1]])assert.equal(bankItem(m,itemReward(id,k,q)),true);assert.equal(m.reduce((s,e)=>s+e.credits,0),252);assert.equal(m.reduce((s,e)=>s+e.rp,0),13);assert.equal(m.reduce((s,e)=>s+e.volume,0),19);assert.equal(bankItem(m,itemReward('a','ore',1)),false);});
+test('full bay refuses another item without consuming capacity',()=>{const m=[];for(let i=0;i<5;i++)assert.ok(bankItem(m,itemReward(String(i),'core',1)));assert.equal(bankItem(m,itemReward('extra','glass',1)),false);assert.equal(m.length,5);});
+test('heat locks at 100 and does not unlock above 40',()=>{assert.deepEqual(heatStep(99,false,true,1),{heat:100,locked:true});assert.equal(heatStep(41,true,true,.01).locked,true);assert.deepEqual(heatStep(41,true,true,1),{heat:26,locked:false});});
+test('bay requires full containment and slow movement',()=>{assert.ok(fitsBay(0,1,0,.5,.9));assert.equal(fitsBay(3.2,1,0,.5,0),false);assert.equal(fitsBay(0,1,0,.5,1),false);assert.equal(fitsBay(0,4,0,.5,0),false);});
+test('heavy carry has a meaningful speed penalty',()=>{assert.ok(carrySpeed(45)<carrySpeed(6));assert.equal(carrySpeed(10000),.35);});
+test('repeated completed mission never duplicates progress',()=>{let p=award(emptyProfile(),'run1',252,13,['ore','glass']);p=award(p,'run1',252,13,['ore','glass']);assert.equal(p.credits,252);assert.equal(p.runs,1);assert.equal(p.rp,13);});
+test('invalid and future save data rejected before replacement',()=>{assert.throws(()=>validateProfile({...emptyProfile(),schemaVersion:2}));assert.throws(()=>validateProfile({...emptyProfile(),credits:-10}));assert.throws(()=>validateProfile({...emptyProfile(),discoveries:['malformed']}));assert.deepEqual(validateProfile(JSON.parse(JSON.stringify(emptyProfile()))),emptyProfile());});

@@ -1,6 +1,6 @@
 # Moon Goons — Game Design Bible
 
-Version 1.0 • 14 September 2026 • Status: design baseline, implementation not started
+Version 1.1 • 14 September 2026 • Status: primary design baseline; first solo prototype implemented
 
 This is the primary design reference for **Moon Goons**, a browser-first HTML cooperative physics extraction game. It defines the experience, rules, scope, and validation gates. [GDD.md](GDD.md) translates this bible into production requirements. If they disagree, change this bible through a recorded decision before updating the GDD. All numerical values below are initial tuning hypotheses, not playtested results or release promises.
 
@@ -497,3 +497,9 @@ Glossary: **secured** means atomically recorded in the manifest and removed from
 Provenance: original user concept in “Chaotic Co-op Extraction Game,” conversation ID `6a6b862b-36b4-83ea-bea0-246e0ecddb20`, reviewed 14 September 2026. The earlier assistant's suggestions were design material, not completed work. This version is a new, internally specified baseline.
 
 Technical references checked 14 September 2026: [Three.js WebGL capability checks](https://threejs.org/docs/pages/WebGL.html), [Rapier overview](https://rapier.rs/docs/), [Rapier determinism constraints](https://rapier.rs/docs/user_guides/javascript/determinism/), and [Steamworks authentication](https://partner.steamgames.com/doc/features/auth). Recheck release-sensitive documentation when implementing. These sources support technical planning; all gameplay numbers and production estimates are original proposals requiring validation.
+
+## Implementation record — 0.2 solo field test
+
+The first solo Practice Moon build is implemented in `prototype/`, in the user-created `C:\GPT_DEV\GPT Moon Goons` working folder. See [build verification](docs/production/BUILD_0.2.md) for actual coverage, evidence, and remaining gates. Planned milestone text above remains a target, not a claim that all acceptance criteria are complete.
+
+Accepted prototype adjustments: assisted target selection is 2.8 m; quick scan uses F in addition to the scanner slot; failed pointer capture falls back to right-drag/arrow look; optional untimed practice awards no permanent progress; early extraction requires confirmation; pause offers a free suit recall. Camera shake and bob are absent. Current heat, mass, volume, payout, and deadline values retain the specified baseline. Full player stumble/injury, music, research purchase UI, controller support, networking, external newcomer tests, and hardware qualification remain future work.

@@ -1,0 +1,17 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import RAPIER from '@dimforge/rapier3d-compat';
+import {Moon} from '../src/simulation/moon.ts';
+await RAPIER.init();
+const idle={x:0,z:0,yaw:0,jump:false,burst:false,grab:false,scan:false,use:false,sprint:false,brace:false};
+function driver(m){let yaw=0;return {
+  tick(n=1,extra={}){for(let i=0;i<n;i++){m.step({...idle,yaw,...extra});m.events.length=0;}},
+  face(x,z){const p=m.player.translation();yaw=Math.atan2(x-p.x,-(z-p.z));},
+  go(x,z,tolerance=.35){let n=0;for(;n<3600;n++){const p=m.player.translation(),d=Math.hypot(x-p.x,z-p.z);if(d<tolerance)break;yaw=Math.atan2(x-p.x,-(z-p.z));m.step({...idle,yaw,z:1});m.events.length=0;}assert.ok(n<3600,`route stuck toward ${x},${z}: ${JSON.stringify(m.player.translation())}`);this.tick(40);},
+  mine(index){const s=m.samples[index],p=s.body.translation();this.go(p.x,p.z,1.9);this.face(p.x,p.z);let n=0;for(;n<2400&&s.state==='deposit';n++){m.step({...idle,yaw,use:!m.locked&&!m.needsRelease});m.events.length=0;}assert.equal(s.state,'loose',`sample ${index} failed to extract: target=${m.target?.id} progress=${s.progress}`);this.tick(80);this.face(s.body.translation().x,s.body.translation().z);this.tick(1,{grab:true});assert.equal(m.held?.id,s.id);},
+  bank(){this.go(0,10);this.go(0,1);yaw=0;this.tick(100);this.tick(1,{grab:true});this.tick(200);}
+};}
+test('complete physical ore / glass / core route banks real cargo',()=>{const m=new Moon();try{m.start();const d=driver(m);d.tick(90);d.mine(0);d.bank();assert.equal(m.manifest.length,1,'ore not banked');d.go(0,10);d.go(16,10);d.mine(2);d.go(16,10);d.bank();assert.equal(m.manifest.length,2,'glass not banked');d.go(0,10);d.go(22,19);d.mine(5);d.go(22,9);d.bank();assert.equal(m.manifest.length,3,'core not banked');assert.deepEqual(m.manifest.map(e=>e.kind),['ore','glass','core']);assert.ok(m.remaining>0);assert.equal(m.volume,15);console.log('Physical route:',{seconds:Math.round(m.elapsed),credits:m.credits,rp:m.rp,conditions:m.manifest.map(e=>e.condition)});m.finish();assert.equal(m.finished,true);}finally{m.dispose();}});
+test('jump returns to ground; burst and safe recall keep finite positions',()=>{const m=new Moon();try{m.start();const d=driver(m);d.tick(90);const base=m.player.translation().y;d.tick(1,{jump:true});d.tick(75);assert.ok(m.player.translation().y>base+2);d.tick(150);assert.ok(Math.abs(m.player.translation().y-base)<.1);d.tick(1,{burst:true});assert.equal(m.charges,1);m.player.setTranslation({x:70,y:1,z:0},true);d.tick();assert.ok(m.player.translation().z===12);assert.equal(m.recalls,1);}finally{m.dispose();}});
+test('deadline freezes manifest and cannot run another tick of banking',()=>{const m=new Moon();try{m.start();const d=driver(m);d.tick(90);d.mine(0);d.bank();const before=m.credits;m.elapsed=300-1/60;d.tick(2);assert.equal(m.finished,true);assert.equal(m.running,false);d.tick(120);assert.equal(m.credits,before);assert.equal(m.manifest.length,1);}finally{m.dispose();}});
+test('overheating is recoverable but requires release before further drilling',()=>{const m=new Moon();try{m.start();const d=driver(m);d.tick(60);d.go(-6,17,1.9);d.face(-6,17);d.tick(300,{use:true});assert.equal(m.locked,true);const progress=m.samples[0].progress;d.tick(300,{use:true});assert.equal(m.samples[0].progress,progress);d.tick(1,{use:false});d.tick(120,{use:true});assert.equal(m.samples[0].state,'loose');}finally{m.dispose();}});

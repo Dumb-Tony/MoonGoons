@@ -1,6 +1,6 @@
 # Milestone backlog
 
-All implementation items are pending. M0 is the documentation/scaffolding deliverable; Git commit verification is performed when installing this project.
+The 0.2 solo build implements the core work in rows 1–6; external feel testing and full P0C qualification remain open. Row 7 is the current publishing step. See BUILD_0.2.md for actual evidence; P1 and later rows remain pending.
 
 | Order | Item | Dependency | Acceptance reference |
 |---|---|---|---|

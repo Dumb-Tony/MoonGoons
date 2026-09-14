@@ -1,25 +1,48 @@
 # Moon Goons
 
-A browser-first cooperative physics extraction game about underqualified scientists, valuable cargo, floaty space travel, and questionable equipment.
+**A small moon. A big haul. A deeply unqualified scientist.**
 
-**Current milestone: design foundation.** Documentation and development folders are prepared. There is no playable build, installed dependency set, or public play URL yet.
+Browser-first cooperative physics extraction game. The current **0.2 solo field test** is playable; online co-op remains a later milestone.
 
-## Start here
+## Play
 
-- [Game Design Bible](GAME_DESIGN_BIBLE.md) — primary creative and systems reference.
-- [Production GDD](GDD.md) — derived requirements and acceptance criteria.
-- [Backlog](docs/production/BACKLOG.md) — implementation order and scope gates.
-- [Test plan](docs/production/TEST_PLAN.md) — future verification; no playtests claimed.
-- [Architecture baseline](docs/architecture/ADR-001-browser-first.md) — proposed stack and boundaries.
-- [Concept provenance](concept/ORIGINAL_CONCEPT.md) — recovered premise and expansion policy.
-- [Source and asset register](docs/reference/SOURCES_AND_ASSETS.md) — technical references and future asset licensing.
+[Play Moon Goons](https://dumb-tony.github.io/MoonGoons/)
 
-## Development direction
+Choose a five-minute sortie or untimed practice. Scan and drill deposits, carry the freed cargo into the ship's striped bay, release it, and let it settle. Only secured cargo earns credits and research. Practice does not award permanent progress.
 
-First build a solo Practice Moon prototype, then validate real 2–4-player network physics before adding destinations. Proposed stack: TypeScript, Three.js, Rapier, and Vite, with a later authoritative Node session service. Pin and verify dependencies when implementation begins; no installation commands or scripts exist yet.
+| Action | Default |
+|---|---|
+| Move / look | WASD / mouse; right-drag or arrows if mouse capture is unavailable |
+| Jump / sprint | Space / Shift |
+| Grab or release | E |
+| Drill | Hold left mouse with drill equipped |
+| Equip drill / scanner | 1 / 2 |
+| Quick scan / emergency burst | F / Q |
+| Brace / pause | Right mouse / Escape |
 
-`prototype/` holds future browser source and runtime assets; `server/` and `shared/` reserve online boundaries; `art/`, `audio/`, and `concept/` hold creative work. `tests/` will hold meaningful simulation, save, and network fixtures.
+Settings include rebinding, sensitivity, field of view, text size, low graphics, invert look, sprint/tool toggles, sound volume, and save export/import. Browser data is local to the site's origin; export a backup before changing computers. Local-preview progress and public-site progress are separate unless you transfer a backup.
 
-Future static builds should receive a verified public deployment under the parent workspace rules. Online sessions require a separate service. Steam packaging and a possible Unity port are later evaluated milestones, not implemented capabilities.
+## Development
 
-Keep this project in its own repository. Commit milestones and keep an off-machine copy; Git alone on one PC is not a backup. No open-source license has been selected, and third-party assets must have documented permission before use.
+Working folder: `C:\GPT_DEV\GPT Moon Goons`. The earlier `C:\GPT_DEV\MoonGoons` folder remains a design-only snapshot; continue development in the new folder.
+
+Requires Node 24. From `prototype/`:
+
+```sh
+npm ci
+npm run dev
+npm test
+npm run build
+```
+
+The app uses pinned TypeScript, Three.js, Rapier, and Vite packages. Static production files are built into `prototype/dist/`; the GitHub workflow tests, builds, and publishes them. No runtime CDN or service credential is required. Online play will need a separate authoritative session service.
+
+## Project references
+
+- [Game Design Bible](GAME_DESIGN_BIBLE.md) — primary design reference and long-term gates.
+- [Production GDD](GDD.md) — requirements, current scope, and acceptance criteria.
+- [Build verification](docs/production/BUILD_0.2.md) — what was tested and what remains unproven.
+- [Backlog](docs/production/BACKLOG.md) — next milestones.
+- [Sources and assets](docs/reference/SOURCES_AND_ASSETS.md) — provenance and licensing.
+
+The public prototype does not include online co-op, research purchases, extra biomes, Steam integration, or a Unity port. No external newcomer/group feel study has been completed. All visual models and effects are authored procedural assets; sound effects are synthesized locally.

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0 — Solo field test — 2026-09-14
+
+- Continued development in the user-created GPT Moon Goons folder, preserving Git history.
+- Built a playable Practice Moon with low-gravity movement, three harvestable cargo types, drill/scanner, heat, and physical hauling.
+- Added a timed extraction loop, manifest/results, untimed practice, local saves and export/import, remapping and comfort settings.
+- Added eleven passing rule/physics checks and visually verified a browser harvest-to-results input replay plus save reload.
+- Added automated GitHub Pages publishing. Online co-op and human feel testing remain pending.
+
 ## 0.1.0 — Design foundation — 2026-09-14
 
 - Expanded the recovered concept into the primary Game Design Bible.

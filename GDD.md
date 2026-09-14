@@ -1,8 +1,8 @@
 # Moon Goons — Production Game Design Document
 
-Version 1.0 • 14 September 2026 • Derived from GAME_DESIGN_BIBLE.md v1.0
+Version 1.1 • 14 September 2026 • Derived from GAME_DESIGN_BIBLE.md v1.1
 
-Status: specification only. No playable prototype, installed runtime, completed playtest, or deployed game is included in this milestone. [GAME_DESIGN_BIBLE.md](GAME_DESIGN_BIBLE.md) is authoritative; this document defines implementation order, requirements, and acceptance evidence. Numeric defaults are unvalidated tuning hypotheses.
+Status: first solo prototype implemented. Requirements below describe the full production target; see docs/production/BUILD_0.2.md for tested coverage and unfinished gates. [GAME_DESIGN_BIBLE.md](GAME_DESIGN_BIBLE.md) is authoritative; this document defines implementation order, requirements, and acceptance evidence. Numeric defaults are unvalidated tuning hypotheses.
 
 ## 1. Product and production boundaries
 
@@ -204,4 +204,4 @@ M0 delivers this specification, bible, repo scaffolding, provenance, backlog, an
 
 Each feature issue cites a requirement ID and a bible section. Tuning changes update the bible's single baseline first, then this GDD and data. Record reasons in an architecture/design decision entry when changing scope, ownership, or platform assumptions. Future code may refine mechanics through evidence, but must not quietly contradict the primary reference.
 
-Immediate next task: implement P0A in `prototype/` with one test room and one cargo core. Validate movement, camera, grabbing, recovery, and low-gravity feel before adding harvesting. No additional design approval is assumed necessary for ordinary implementation choices within an explicitly authorized future prototype task.
+Immediate next task: gather human feedback on the playable P0 loop, improve movement/cargo feel, and measure supported hardware before the P1 network spike. No additional design approval is assumed necessary for ordinary implementation choices within an explicitly authorized future prototype task.
