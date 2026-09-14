@@ -1,0 +1,23 @@
+# Dependencies and generated builds
+node_modules/
+dist/
+build/
+coverage/
+.vite/
+*.tsbuildinfo
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Local data and diagnostics
+*.log
+*.tmp
+save-exports/
+local-data/
+playtest-recordings/
+.DS_Store
+Thumbs.db
