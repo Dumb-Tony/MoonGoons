@@ -19,3 +19,7 @@ No runtime art, audio, fonts, or third-party code is included in M0. Before addi
 
 ## Prototype 0.2 assets and libraries
 All terrain, ship, astronaut, cargo meshes, labels, icons, and sound effects are authored in source for this project. No external art/audio files were imported. Runtime libraries are pinned in prototype/package-lock.json: Three.js (MIT), Rapier JavaScript package (Apache-2.0), Vite and TypeScript development tooling; inspect each installed package license before redistribution. The public bundle includes its library license notices where emitted by tooling. No service credentials are needed.
+
+## Prototype 0.3 assets
+
+All new bitmap textures are generated locally from authored canvas/noise code in prototype/src/presentation/materials.ts. Footprints, sky, planet, worn panels, fabric and mineral textures require no external images or services. Post-processing uses the installed Three.js addon implementations of SSAO, SSR, bloom and SMAA; dependency versions are unchanged.

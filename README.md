@@ -2,7 +2,7 @@
 
 **A small moon. A big haul. A deeply unqualified scientist.**
 
-Browser-first cooperative physics extraction game. The current **0.2 solo field test** is playable; online co-op remains a later milestone.
+Browser-first cooperative physics extraction game. The current **0.3 solo field test** is playable; online co-op remains a later milestone.
 
 ## Play
 
@@ -20,7 +20,7 @@ Choose a five-minute sortie or untimed practice. Scan and drill deposits, carry 
 | Quick scan / emergency burst | F / Q |
 | Brace / pause | Right mouse / Escape |
 
-Settings include rebinding, sensitivity, field of view, text size, low graphics, invert look, sprint/tool toggles, sound volume, and save export/import. Browser data is local to the site's origin; export a backup before changing computers. Local-preview progress and public-site progress are separate unless you transfer a backup.
+Settings include rebinding, sensitivity, field of view, text size, performance mode, optional screen-space reflections, invert look, sprint/tool toggles, sound volume, and save export/import. Browser data is local to the site's origin; export a backup before changing computers. Local-preview progress and public-site progress are separate unless you transfer a backup.
 
 ## Development
 
@@ -41,7 +41,7 @@ The app uses pinned TypeScript, Three.js, Rapier, and Vite packages. Static prod
 
 - [Game Design Bible](GAME_DESIGN_BIBLE.md) — primary design reference and long-term gates.
 - [Production GDD](GDD.md) — requirements, current scope, and acceptance criteria.
-- [Build verification](docs/production/BUILD_0.2.md) — what was tested and what remains unproven.
+- [Build verification](docs/production/BUILD_0.3.md) — what was tested and what remains unproven.
 - [Backlog](docs/production/BACKLOG.md) — next milestones.
 - [Sources and assets](docs/reference/SOURCES_AND_ASSETS.md) — provenance and licensing.
 

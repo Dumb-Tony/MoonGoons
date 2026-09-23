@@ -503,3 +503,11 @@ Technical references checked 14 September 2026: [Three.js WebGL capability check
 The first solo Practice Moon build is implemented in `prototype/`, in the user-created `C:\GPT_DEV\GPT Moon Goons` working folder. See [build verification](docs/production/BUILD_0.2.md) for actual coverage, evidence, and remaining gates. Planned milestone text above remains a target, not a claim that all acceptance criteria are complete.
 
 Accepted prototype adjustments: assisted target selection is 2.8 m; quick scan uses F in addition to the scanner slot; failed pointer capture falls back to right-drag/arrow look; optional untimed practice awards no permanent progress; early extraction requires confirmation; pause offers a free suit recall. Camera shake and bob are absent. Current heat, mass, volume, payout, and deadline values retain the specified baseline. Full player stumble/injury, music, research purchase UI, controller support, networking, external newcomer tests, and hardware qualification remain future work.
+
+## Implementation record — 0.3 visual overhaul
+
+The browser prototype now uses procedural color/bump textures for lunar ground, rocks, worn ship panels, fabric and tread plates. Its palette combines warm ochre sunlight, rose mineral ridges, teal equipment and blue shadows. Rounded ship parts, a reflective visor, luminous crystals, a nebula sky, ringed planet, dust and pooled bootprints establish the visual direction without changing physical terrain or gameplay tuning.
+
+Default high quality uses a 2048-pixel directional shadow map, ambient occlusion, bloom, tone mapping and antialiasing. Environment reflections use a static scene capture. Optional screen-space ray-marched reflections affect selected glossy surfaces: they cannot accurately reflect objects outside the rendered view and are not hardware ray tracing or path tracing. Performance mode keeps textures and 1024-pixel shadows while bypassing post-processing, including reflections. Reflection preference is retained when performance mode is active. Reflections default off; no minimum-hardware certification is claimed.
+
+See [0.3 verification](docs/production/BUILD_0.3.md). Online co-op, Steam and Unity remain future milestones.

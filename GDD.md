@@ -205,3 +205,7 @@ M0 delivers this specification, bible, repo scaffolding, provenance, backlog, an
 Each feature issue cites a requirement ID and a bible section. Tuning changes update the bible's single baseline first, then this GDD and data. Record reasons in an architecture/design decision entry when changing scope, ownership, or platform assumptions. Future code may refine mechanics through evidence, but must not quietly contradict the primary reference.
 
 Immediate next task: gather human feedback on the playable P0 loop, improve movement/cargo feel, and measure supported hardware before the P1 network spike. No additional design approval is assumed necessary for ordinary implementation choices within an explicitly authorized future prototype task.
+
+## 0.3 presentation implementation
+
+Derived from the bible's 0.3 implementation record: textured surfaces, expanded color palette, directional shadows, ambient occlusion, bloom, environment reflections, optional screen-space reflections, and performance mode are implemented. Physics and reward requirements are unchanged. Screen-space reflections are an optional approximation, not hardware ray tracing. See [verification](docs/production/BUILD_0.3.md).

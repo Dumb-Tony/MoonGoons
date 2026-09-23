@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0 — Visual overhaul — 2026-09-22
+
+- Added procedural lunar grit/craters, rock, fabric weave, worn panel, metal tread, planet and nebula textures.
+- Rebuilt lighting with warm directional shadows, cool fill, contact shading, bloom and antialiasing.
+- Detailed the ship and astronaut; added reflective materials, glowing crystals, landing lights, dust and pooled footprints.
+- Added optional screen-space reflections and a lighter performance mode. This is not hardware ray tracing.
+- Preserved simulation, economy and save format. Eleven regression checks pass; browser extraction replay verified with reflections.
+
 ## 0.2.0 — Solo field test — 2026-09-14
 
 - Continued development in the user-created GPT Moon Goons folder, preserving Git history.
