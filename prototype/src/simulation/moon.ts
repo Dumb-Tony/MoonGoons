@@ -9,6 +9,7 @@ export class Moon {
   samples:Sample[]=[];manifest:Entry[]=[];events:GameEvent[]=[];
   held:Sample|null=null;target:Sample|null=null;heat=0;locked=false;needsRelease=false;
   elapsed=0;running=false;practice=false;finished=false;runId='';charges=2;recharge=0;
+  bracing=false;burstVisual=0;
   grounded=false;grace=0;jumpBuffer=0;scanCooldown=0;scanReveal=0;scanWindup=0;usedScan=false;
   yaw=0;walkDistance=0;airTime=0;lost=0;recalls=0;drilling=false;recoverCooldown=0;
   constructor(){
@@ -38,34 +39,34 @@ export class Moon {
       if(hit&&hit.collider.handle!==sample.collider.handle)continue;
       const s=d+(1-dot)*.8;if(s<score){score=s;this.target=sample;}}
   }
-  release(){if(this.held){this.held.collider.setCollisionGroups(0x0004ffff);this.notify('grab','Cargo released. Let it settle in the striped bay.');this.held=null;}}
+  release(gentle=false){if(this.held){if(gentle){const v=this.held.body.linvel();this.held.body.setLinvel({x:v.x*.15,y:Math.min(0,v.y),z:v.z*.15},true);this.held.body.setAngvel({x:0,y:0,z:0},true);}this.held.collider.setCollisionGroups(0x0004ffff);this.notify('grab','Cargo released. Let it settle in the striped bay.');this.held=null;}}
   extract(s:Sample){const p=s.body.translation();this.world.removeRigidBody(s.body);s.body=this.world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setTranslation(p.x,p.y+.12,p.z).setLinearDamping(.25).setAngularDamping(1.8).setCcdEnabled(true));s.collider=this.world.createCollider(RAPIER.ColliderDesc.ball(RESOURCES[s.kind].radius).setMass(RESOURCES[s.kind].mass).setFriction(.9).setRestitution(s.kind==='glass'?.08:.17).setCollisionGroups(0x0004ffff),s.body);s.state='loose';s.damageDelay=2;this.notify('extract',`${RESOURCES[s.kind].label} freed. Pick it up and bring it home.`,s.id);}
   recall(){this.release();this.player.setTranslation({x:0,y:1.1,z:12},true);this.player.setLinvel({x:0,y:0,z:0},true);this.charges=2;this.recalls++;this.notify('recall','Suit retrieval complete. Your secured cargo is safe.');}
   finish(){if(this.finished)return;this.release();this.running=false;this.finished=true;this.drilling=false;this.notify('finish');}
   step(input:Input){
     if(!this.running||this.finished)return;
-    const dt=STEP,p=this.player.translation(),vel=this.player.linvel();this.yaw=input.yaw;
+    const dt=STEP,p=this.player.translation(),vel=this.player.linvel();this.yaw=input.yaw;this.bracing=input.brace;this.burstVisual=Math.max(0,this.burstVisual-dt);
     this.scanCooldown=Math.max(0,this.scanCooldown-dt);this.scanReveal=Math.max(0,this.scanReveal-dt);this.recoverCooldown=Math.max(0,this.recoverCooldown-dt);
     const ray=this.world.castRay(new RAPIER.Ray({x:p.x,y:p.y-.78,z:p.z},{x:0,y:-1,z:0}),.19,true,undefined,undefined,this.playerCollider,this.player);
     this.grounded=!!ray&&vel.y<.8;this.grace=this.grounded?.12:Math.max(0,this.grace-dt);this.jumpBuffer=input.jump?.15:Math.max(0,this.jumpBuffer-dt);
     if(this.grounded&&this.charges<2){this.recharge+=dt;if(this.recharge>=8){this.charges++;this.recharge=0;}}
-    if(input.burst&&this.charges>0){const f={x:Math.sin(input.yaw)*1.2,y:1.6,z:-Math.cos(input.yaw)*1.2};this.player.applyImpulse({x:f.x*80,y:f.y*80,z:f.z*80},true);this.charges--;this.notify('jump');}
+    if(input.burst&&this.charges>0){const f={x:Math.sin(input.yaw)*1.2,y:1.6,z:-Math.cos(input.yaw)*1.2};this.player.applyImpulse({x:f.x*80,y:f.y*80,z:f.z*80},true);this.charges--;this.burstVisual=.45;this.notify('jump');}
     let jumping=false;if(this.jumpBuffer>0&&this.grace>0){this.player.setLinvel({x:vel.x,y:4.2,z:vel.z},true);this.jumpBuffer=0;this.grace=0;this.grounded=false;jumping=true;this.notify('jump');}
     const mass=this.held?RESOURCES[this.held.kind].mass:0,speed=(input.sprint&&mass<=35?6:4)*carrySpeed(mass)*(input.brace?.3:1);
     let dx=Math.sin(input.yaw)*input.z+Math.cos(input.yaw)*input.x,dz=-Math.cos(input.yaw)*input.z+Math.sin(input.yaw)*input.x;const l=Math.hypot(dx,dz);if(l>1){dx/=l;dz/=l;}
-    const v=this.player.linvel(),ax=this.grounded?16:2.5,max=this.grounded?speed:Math.min(4,speed), change=(t:number,c:number)=>clamp(t-c,-ax*dt,ax*dt);
-    if(this.grounded||l>0)this.player.setLinvel({x:v.x+change(dx*max,v.x),y:jumping?4.2:v.y,z:v.z+change(dz*max,v.z)},true);
+    const v=this.player.linvel(),ax=this.grounded?16:input.brace?7:2.5,max=this.grounded?speed:Math.min(4,speed), change=(t:number,c:number)=>clamp(t-c,-ax*dt,ax*dt);
+    if(this.grounded||l>0||input.brace)this.player.setLinvel({x:v.x+change(dx*max,v.x),y:jumping?4.2:v.y,z:v.z+change(dz*max,v.z)},true);
     this.walkDistance+=Math.hypot(v.x,v.z)*dt;if(!this.grounded)this.airTime+=dt;
     this.selectTarget(input.yaw);
-    if(input.grab){if(this.held)this.release();else if(this.target?.state==='loose'){this.held=this.target;this.held.collider.setCollisionGroups(0x0004fffd);this.notify('grab',`${RESOURCES[this.held.kind].label} · ${mass||RESOURCES[this.held.kind].mass} kg. Walk it into the cargo bay.`);}else if(this.target?.state==='deposit'){this.notify('hint','This sample is still embedded. Use the drill first.');}}
+    if(input.grab){if(this.held)this.release(input.brace);else if(this.target?.state==='loose'){this.held=this.target;this.held.collider.setCollisionGroups(0x0004fffd);this.notify('grab',`${RESOURCES[this.held.kind].label} · ${mass||RESOURCES[this.held.kind].mass} kg. Walk it into the cargo bay.`);}else if(this.target?.state==='deposit'){this.notify('hint','This sample is still embedded. Use the drill first.');}}
     if(input.scan&&this.scanCooldown<=0){this.scanWindup=1;this.scanCooldown=4;this.notify('scanstart','Scanning…');}
     if(this.scanWindup>0){this.scanWindup-=dt;if(this.scanWindup<=0){this.scanReveal=8;this.usedScan=true;this.notify('scan','Survey pulse complete. Nearby sample markers revealed.');}}
     if(!input.use)this.needsRelease=false;
     this.drilling=input.use&&!this.held&&this.target?.state==='deposit'&&!this.locked&&!this.needsRelease;
     const h=heatStep(this.heat,this.locked,this.drilling,dt);if(h.locked&&!this.locked){this.needsRelease=true;this.notify('heat','Drill overheated. Let it cool, then press again.');}this.heat=h.heat;this.locked=h.locked;
     if(this.drilling&&this.target){this.target.progress+=dt;const recoil=.12;this.player.applyImpulse({x:-Math.sin(input.yaw)*recoil,y:0,z:Math.cos(input.yaw)*recoil},true);if(this.target.progress>=RESOURCES[this.target.kind].seconds){this.extract(this.target);this.drilling=false;}}
-    if(this.held){const s=this.held,a=s.body.translation(),cv=s.body.linvel(),pv=this.player.linvel(),r=RESOURCES[s.kind],target={x:p.x+Math.sin(input.yaw)*1.7,y:p.y+.6,z:p.z-Math.cos(input.yaw)*1.7};
-      const fx=(target.x-a.x)*24-(cv.x-pv.x)*9,fy=(target.y-a.y)*24-(cv.y-pv.y)*9+3,fz=(target.z-a.z)*24-(cv.z-pv.z)*9,force=Math.hypot(fx,fy,fz),cap=Math.min(1,34/Math.max(force,.01));s.body.applyImpulse({x:fx*r.mass*dt*cap,y:fy*r.mass*dt*cap,z:fz*r.mass*dt*cap},true);
+    if(this.held){const s=this.held,a=s.body.translation(),cv=s.body.linvel(),pv=this.player.linvel(),r=RESOURCES[s.kind],target={x:p.x+Math.sin(input.yaw)*1.7,y:input.brace&&this.grounded?terrainHeight(p.x+Math.sin(input.yaw)*1.7,p.z-Math.cos(input.yaw)*1.7)+r.radius+.12:p.y+.6,z:p.z-Math.cos(input.yaw)*1.7};
+      const damping=input.brace?12:9,fx=(target.x-a.x)*24-(cv.x-pv.x)*damping,fy=(target.y-a.y)*24-(cv.y-pv.y)*damping+3,fz=(target.z-a.z)*24-(cv.z-pv.z)*damping,force=Math.hypot(fx,fy,fz),cap=Math.min(1,34/Math.max(force,.01));s.body.applyImpulse({x:fx*r.mass*dt*cap,y:fy*r.mass*dt*cap,z:fz*r.mass*dt*cap},true);
       if(Math.hypot(target.x-a.x,target.y-a.y,target.z-a.z)>4){this.release();this.notify('hint','Grip released: the cargo was caught on something.');}}
     this.world.step();
     const pp=this.player.translation();if(!Number.isFinite(pp.y)||pp.y< -15||Math.abs(pp.x)>57||Math.abs(pp.z)>57)this.recall();

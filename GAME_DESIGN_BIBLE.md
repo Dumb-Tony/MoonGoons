@@ -136,7 +136,7 @@ Use meters, kilograms, seconds, and a fixed 60 Hz simulation. Planet gravity cha
 
 For each destination derive jump speed from a desired height `v = sqrt(2 × gravity × height)` and tune the height, rather than applying the same impulse everywhere. Rust Belt starts near 2 m; Crusher near 1 m. Artificial caps and damping are allowed when documented and consistent. Explain these as suit stabilization, not a realistic orbital simulation.
 
-The player controller uses a collision capsule with limited force-driven interactions. Visual secondary motion supplies wobble; full articulated ragdoll is restricted to downed characters in P1. A brace reduces horizontal movement and applies stronger contact friction but cannot anchor a player in empty space. Bursts have a speed cap; repeatedly boosting into a wall cannot accumulate infinite energy.
+The player controller uses a collision capsule with limited force-driven interactions. Visual secondary motion supplies wobble; full articulated ragdoll is restricted to downed characters in P1. A brace reduces horizontal movement and steadies carried cargo. In P0.4, suit air braking applies 7 m/s² horizontal control acceleration while airborne, without cancelling gravity or consuming burst charges; it cannot hover. Grounded bracing lowers cargo to its radius plus 0.12 m above the sampled terrain. Braced release retains 15% of horizontal cargo velocity, removes spin and cancels upward velocity; downward velocity and gravity remain. Bursts have a speed cap; repeatedly boosting into a wall cannot accumulate infinite energy.
 
 Collisions use impulse or relative impact speed, never speed alone. Begin with no player injury below 5 m/s impact speed, a stumble from 5–8, and suit-integrity damage above 8; tune with mass and contact direction. Grace periods after rescue prevent chain knockdowns. Cargo-to-player impacts are capped and cannot instantly down a healthy teammate.
 
@@ -164,7 +164,7 @@ Each scientist has two tool slots, a built-in low-range scanner in P0, and a bas
 
 | Tool | Primary action and starting tuning | Failure and recovery | Scope |
 |---|---|---|---|
-| Survey scanner | Hold a 1 s pulse; 12 m range, 3 s cooldown; identify category and nearest deposit | Damaged sensor shows a labeled uncertainty cone; recalibrate at a station | P0 reliable; failures P2 |
+| Survey scanner | Hold a 1 s pulse; 24 m range, 4 s start-to-start cooldown; identify category and nearest deposit | Damaged sensor shows a labeled uncertainty cone; recalibrate at a station | P0 reliable; failures P2 |
 | Utility drill | Contact extraction, 6 s for starter ore; heat +22/s active, −15/s idle | Warn at 75 heat; lock at 100; restart at 40; optional P2 jam repair | P0 |
 | Tether gun | Connect two valid anchors, max 12 m, two live links per player | Visible tension; detach safely; overstress releases without explosive impulse | P1 |
 | Utility wrench | Hold 3 s at a marked fault; teammate can stabilize it | Movement interrupts with progress retained for 2 s; baseline fixes cost no currency | P1 |
@@ -511,3 +511,12 @@ The browser prototype now uses procedural color/bump textures for lunar ground, 
 Default high quality uses a 2048-pixel directional shadow map, ambient occlusion, bloom, tone mapping and antialiasing. Environment reflections use a static scene capture. Optional screen-space ray-marched reflections affect selected glossy surfaces: they cannot accurately reflect objects outside the rendered view and are not hardware ray tracing or path tracing. Performance mode keeps textures and 1024-pixel shadows while bypassing post-processing, including reflections. Reflection preference is retained when performance mode is active. Reflections default off; no minimum-hardware certification is claimed.
 
 See [0.3 verification](docs/production/BUILD_0.3.md). Online co-op, Steam and Unity remain future milestones.
+
+
+## Approved visual direction and implementation — 0.4
+
+User-approved 24 September 2026: retain the 0.3 world's visual style for future levels. Preserve textured mineral terrain, weathered painted equipment, warm sunlight against cool shadows, restrained bloom, and colorful but readable space scenery. Future biomes may change their mineral/sky palette while retaining this material and lighting language. Avoid replacing it with flat untextured geometry or unrelated photorealistic assets.
+
+The scientist now has a rounded pressure suit, layered armor, gold visor outside the helmet shell, collar, shoulder pods, articulated elbows/knees, treaded boots, oxygen bottles, service hose, ribbed backpack, status lights and burst/air-brake jets. Carry, drill, walk, float and landing poses are presentation-only; the authoritative capsule stays unchanged. The drill follows the hand, and its beam starts at the bit.
+
+Mechanics revision: B or right mouse braces; airborne bracing arrests horizontal drift, grounded bracing lowers and damps held cargo, and E while braced performs a gentler release. Scanner reveal radius is 24 m with existing 1 s windup, 4 s start-to-start cooldown and 8 s reveal. Balancing remains provisional pending human feedback. See [0.4 checks](docs/production/BUILD_0.4.md).

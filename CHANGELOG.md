@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0 — Scientist and handling — 2026-09-24
+
+- Preserved the approved world art direction as the baseline for future levels.
+- Rebuilt the astronaut with rounded fabric, layered suit equipment, exposed gold visor, articulated limbs, a detailed pack and thruster effects.
+- Added horizontal air braking, grounded cargo steady/lower, and braced gentle release; B provides a keyboard alternative to right mouse.
+- Expanded scanner radius to 24 m and updated controls/help.
+- Thirteen automated checks pass, including the complete three-resource physics route and new braking/gentle glass delivery tests.
+
 ## 0.3.0 — Visual overhaul — 2026-09-22
 
 - Added procedural lunar grit/craters, rock, fabric weave, worn panel, metal tread, planet and nebula textures.

@@ -25,7 +25,7 @@ Do not include enemies, procedural planets, voxel digging, live voice, global ac
 | GRAB-01 | E grabs highlighted handle within 2.2 m and line of sight; release clears constraint exactly once | 7 | P0A |
 | TOOL-01 | Contact drill extracts starter ore after 6 s cumulative valid contact; invalid contact gives no progress | 8 | P0B |
 | HEAT-01 | Heat +22/s active, −15/s idle/locked; warning 75, lock 100, unlock at 40 and fresh input | 8–9 | P0B |
-| SCAN-01 | One-second scan pulse identifies category within 12 m; 3 s cooldown; no required false positives | 8 | P0B |
+| SCAN-01 | One-second scan pulse identifies category within 24 m; 4 s start-to-start cooldown; no required false positives | 8 | P0B |
 | CARGO-01 | Bay secures only fully contained cargo moving below 1 m/s for 1 s with sufficient volume | 7 | P0B |
 | CARGO-02 | Secured item cannot re-enter physics or earn another payout; failed capacity check preserves it | 7, 10 | P0B |
 | TIME-01 | 300 s clock; warning at 60 s, cues at 30/10; manifest locks at zero before 3 s departure animation | 11 | P0B |
@@ -53,7 +53,7 @@ Use a stable-horizon orbit camera, 4.5 m follow distance and 70° vertical FOV. 
 
 80 kg player; 4 m/s walk, 6 m/s sprint, 16 m/s² ground acceleration, 2.5 m/s² air acceleration with 4 m/s horizontal air-control cap. Practice Moon gravity is 3 m/s², jump launch speed 4.2 m/s. Keep 120 ms coyote time and 150 ms jump buffering. Two suit burst charges give 2 m/s each; grounded recharge is 8 s per charge. Clamp burst-driven extremes and preserve intentional recovery.
 
-Bindings: WASD move, mouse look, Space jump, Shift sprint, E grab/release, left mouse tool, right mouse brace/aim, Q burst, 1/2 or wheel tool slot, middle mouse ping, Escape menu. R is reserved for contextual tether release in P1. See bible section 5 for controller mapping. P0 scanner is suit-mounted and does not consume a tool slot; P1 loadouts use the same stable tool IDs with explicit slot rules.
+Bindings: WASD move, mouse look, Space jump, Shift sprint, E grab/release, left mouse tool, B or right mouse brace/air brake, Q burst, 1/2 or wheel tool slot, middle mouse ping, Escape menu. R is reserved for contextual tether release in P1. See bible section 5 for controller mapping. P0 scanner is suit-mounted and does not consume a tool slot; P1 loadouts use the same stable tool IDs with explicit slot rules.
 
 P0 stumbles are brief and do not use full downing. Out-of-bounds player recalls to the last safe position; cargo applies bible recovery/loss rules. Do not punish a simulator fault as a player mistake.
 
@@ -209,3 +209,8 @@ Immediate next task: gather human feedback on the playable P0 loop, improve move
 ## 0.3 presentation implementation
 
 Derived from the bible's 0.3 implementation record: textured surfaces, expanded color palette, directional shadows, ambient occlusion, bloom, environment reflections, optional screen-space reflections, and performance mode are implemented. Physics and reward requirements are unchanged. Screen-space reflections are an optional approximation, not hardware ray tracing. See [verification](docs/production/BUILD_0.3.md).
+
+
+## 0.4 character and handling
+
+Retain the user-approved 0.3 world art style in all future levels, as recorded in the bible. Implemented character rig adds separate elbow/knee joints, layered suit equipment, a visible visor, hand-mounted drill and thruster feedback. Bracing applies horizontal air braking without hover; on the ground it lowers/stabilizes cargo. Braced release reduces residual horizontal velocity and spin. Scanner radius is now 24 m. Existing movement speeds, jump height, burst charges, cargo payouts and save schema remain unchanged. Acceptance evidence: [build 0.4](docs/production/BUILD_0.4.md).

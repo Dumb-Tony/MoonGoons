@@ -1,3 +1,4 @@
+import {Astronaut} from './astronaut';
 import * as T from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -88,21 +89,9 @@ export class View {
     for(const [x,z] of [[-7,8],[7,8],[-12,-8],[11,-8]]){const y=terrainHeight(x,z);cylinder(this.scene,.04,.06,2.5,0x354954,x,y+1.25,z);const flag=box(this.scene,.95,.5,.03,0xeb9960,x+.45,y+2.2,z);flag.rotation.y=.4;}
     const pad=new T.Mesh(new T.RingGeometry(10.6,10.75,80),new T.MeshBasicMaterial({color:0xc0b695,transparent:true,opacity:.55,side:T.DoubleSide}));pad.rotation.x=-Math.PI/2;pad.position.y=.04;this.scene.add(pad);
   }
-  makeAvatar(){
-    const a=this.avatar;
-    const torso=box(a,.7,.68,.48,0xf19245,0,1,0);torso.material=fabric(0xe88847);torso.rotation.z=.025;
-    box(a,.55,.38,.16,0xece5cd,0,1.01,-.3);box(a,.3,.19,.04,0x355767,0,1.04,-.4);
-    box(a,.61,.71,.31,0xe7ddc6,0,1,.39);cylinder(a,.13,.13,.55,0x355767,-.21,1,.6);cylinder(a,.13,.13,.55,0x355767,.21,1,.6);
-    const helmet=new T.Mesh(new T.SphereGeometry(.49,40,28),mat(0xf0e8d4,.28,.25));helmet.position.set(0,1.62,0);helmet.scale.set(1,1,.92);a.add(helmet);helmet.castShadow=true;
-    const visor=new T.Mesh(new T.SphereGeometry(.466,40,28,Math.PI,Math.PI,Math.PI*.23,Math.PI*.53),new T.MeshPhysicalMaterial({color:0x93b8c5,metalness:1,roughness:.12,clearcoat:1,clearcoatRoughness:.05,envMapIntensity:1.6}));visor.position.set(0,1.64,-.025);a.add(visor);this.reflective.push(visor);
-    const glint=box(a,.18,.05,.018,0xb8e7e1,-.13,1.76,-.43);glint.rotation.z=.12;
-    for(const side of [-1,1]){const arm=new T.Group();arm.position.set(side*.44,1.21,0);const sleeve=box(arm,.24,.45,.26,0xe8af75,0,-.2,0);sleeve.material=fabric(0xe49057);box(arm,.26,.075,.28,0x8bdad4,0,-.34,0);box(arm,.27,.22,.29,0x3a4e5b,0,-.5,0);a.add(arm);this.arms.push(arm);
-      const leg=new T.Group();leg.position.set(side*.21,.64,0);const cloth=box(leg,.28,.47,.3,0xe8d9b9,0,-.21,0);cloth.material=fabric(0xd9c7a1);box(leg,.3,.15,.33,0x536670,0,-.23,-.03);box(leg,.33,.2,.46,0x304653,0,-.52,-.07);a.add(leg);this.legs.push(leg);}
-    const backLight=box(a,.34,.055,.02,0x8bf8e2,0,1.17,.56);backLight.material=glow(0x88ecde,2.4);
-    const patch=new T.Mesh(new T.PlaneGeometry(.31,.14),label('MG / 01',256,128,'#cf8549','#1a3441'));patch.rotation.y=Math.PI;patch.position.set(0,.85,.555);a.add(patch);
-    this.tool= new T.Group();box(this.tool,.25,.23,.55,0x3c5b66);box(this.tool,.31,.28,.21,0xf3c268,0,0,-.2);const bit=cylinder(this.tool,.07,.12,.35,0xb8c8c8,0,0,-.47);bit.rotation.x=Math.PI/2;this.tool.position.set(.47,.8,-.52);a.add(this.tool);
-    const shadow=new T.Mesh(new T.CircleGeometry(.55,24),new T.MeshBasicMaterial({color:0x1b2635,transparent:true,opacity:.15,depthWrite:false}));shadow.rotation.x=-Math.PI/2;shadow.position.y=.005;a.add(shadow);
-  }
+  inspectSuit=false;
+  pilot!:Astronaut;
+  makeAvatar(){this.pilot=new Astronaut();this.avatar.add(this.pilot.root);this.tool=this.pilot.tool;this.reflective.push(this.pilot.visor);}
   makeDetails(){
     const s=this.ship;
     for(const side of [-1,1]){
@@ -168,12 +157,11 @@ export class View {
     this.avatar.position.set(p.x,p.y-.84,p.z);
     const face=speed>.1&&!moon.held&&!moon.drilling?Math.atan2(v.x,-v.z):yaw;
     let delta=-face-this.avatar.rotation.y;delta=Math.atan2(Math.sin(delta),Math.cos(delta));this.avatar.rotation.y+=delta*Math.min(1,dt*10);
-    const walk=moon.grounded?Math.sin(moon.walkDistance*3.5)*Math.min(.5,speed*.1):-.22;
-    this.legs[0].rotation.x=walk;this.legs[1].rotation.x=-walk;this.arms[0].rotation.x=moon.held?-.95:-walk*.65;this.arms[1].rotation.x=moon.held?-.95:moon.drilling?-1:walk*.65;
-    this.avatar.rotation.z=moon.grounded?Math.sin(this.time*1.8)*.015:.05;this.tool.visible=!moon.held;this.tool.position.y=.8+(moon.drilling?Math.sin(this.time*70)*.015:0);
-    this.beam.visible=moon.drilling&&!!moon.target;this.drillLight.intensity=this.beam.visible?3+Math.sin(this.time*57)*1.5:0;if(this.beam.visible){const start=new T.Vector3(.47,.83,-.65);this.avatar.localToWorld(start);const end=moon.target!.body.translation();this.beam.geometry.setFromPoints([start,new T.Vector3(end.x,end.y,end.z)]);this.drillLight.position.set(end.x,end.y+.3,end.z);}
-    this.scanRing.visible=moon.scanReveal>6;if(this.scanRing.visible){const radius=(8-moon.scanReveal)*6;this.scanRing.scale.setScalar(Math.max(.1,radius));this.scanRing.position.set(this.pulseOrigin.x,terrainHeight(this.pulseOrigin.x,this.pulseOrigin.z)+.09,this.pulseOrigin.z);(this.scanRing.material as T.MeshBasicMaterial).opacity=(moon.scanReveal-6)*.3;}
-    if(intro){const angle=.68+Math.sin(this.time*.035)*.04;this.camera.position.set(Math.sin(angle)*39,20,Math.cos(angle)*39);this.camera.lookAt(-3,2,4);this.cameraReady=false;}
+    this.pilot.update(moon,dt,this.time,speed);
+    this.beam.visible=moon.drilling&&!!moon.target;this.drillLight.intensity=this.beam.visible?3+Math.sin(this.time*57)*1.5:0;if(this.beam.visible){const start=new T.Vector3(0,0,-.55);this.tool.localToWorld(start);const end=moon.target!.body.translation();this.beam.geometry.setFromPoints([start,new T.Vector3(end.x,end.y,end.z)]);this.drillLight.position.set(end.x,end.y+.3,end.z);}
+    this.scanRing.visible=moon.scanReveal>6;if(this.scanRing.visible){const radius=(8-moon.scanReveal)*12;this.scanRing.scale.setScalar(Math.max(.1,radius));this.scanRing.position.set(this.pulseOrigin.x,terrainHeight(this.pulseOrigin.x,this.pulseOrigin.z)+.09,this.pulseOrigin.z);(this.scanRing.material as T.MeshBasicMaterial).opacity=(moon.scanReveal-6)*.3;}
+    if(import.meta.env.DEV&&this.inspectSuit){this.camera.position.set(p.x+2.5,p.y+1.3,p.z-3.5);this.camera.lookAt(p.x,p.y+.2,p.z);this.cameraReady=false;}
+    else if(intro){const angle=.68+Math.sin(this.time*.035)*.04;this.camera.position.set(Math.sin(angle)*39,20,Math.cos(angle)*39);this.camera.lookAt(-3,2,4);this.cameraReady=false;}
     else {
       const target=new T.Vector3(p.x,p.y+.7,p.z),distance=5.7,offset=new T.Vector3(-Math.sin(yaw)*Math.cos(pitch)*distance,Math.sin(pitch)*distance+1.1,Math.cos(yaw)*Math.cos(pitch)*distance);
       this.ray.set(target,offset.clone().normalize());this.ray.far=offset.length();const hit=this.ray.intersectObjects(this.occluders,false)[0];if(hit)offset.setLength(Math.max(1,hit.distance-.25));
