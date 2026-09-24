@@ -84,6 +84,6 @@ export class Astronaut {
       this.elbows[i].rotation.x=moon.held?.35:moon.drilling&&i===1?.55:.18;
     }
     this.tool.visible=!moon.held;this.bit.rotation.z=moon.drilling?time*35:0;
-    this.jets.forEach(j=>{j.visible=moon.burstVisual>0||moon.bracing&&!moon.grounded;j.scale.y=moon.burstVisual>0?1+Math.sin(time*60)*.2:.3;});
+    this.jets.forEach(j=>{j.visible=moon.jetting||moon.burstVisual>0||moon.bracing&&!moon.grounded;j.scale.y=moon.jetting||moon.burstVisual>0?1+Math.sin(time*60)*.2:.3;});
   }
 }

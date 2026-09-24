@@ -520,3 +520,14 @@ User-approved 24 September 2026: retain the 0.3 world's visual style for future 
 The scientist now has a rounded pressure suit, layered armor, gold visor outside the helmet shell, collar, shoulder pods, articulated elbows/knees, treaded boots, oxygen bottles, service hose, ribbed backpack, status lights and burst/air-brake jets. Carry, drill, walk, float and landing poses are presentation-only; the authoritative capsule stays unchanged. The drill follows the hand, and its beam starts at the bit.
 
 Mechanics revision: B or right mouse braces; airborne bracing arrests horizontal drift, grounded bracing lowers and damps held cargo, and E while braced performs a gentler release. Scanner reveal radius is 24 m with existing 1 s windup, 4 s start-to-start cooldown and 8 s reveal. Balancing remains provisional pending human feedback. See [0.4 checks](docs/production/BUILD_0.4.md).
+
+
+## Implementation record — 0.5 jetpack and Cinder Basin
+
+Cinder Basin replaces the small Practice Moon layout as the first authored expedition slice. The 120 m play space keeps the approved textured mineral / weathered equipment / warm-light-and-cool-shadow visual style. The landing yard and southern harvesting area lead north through lit approach routes to West Relay (deck elevation 9.05 m) and Glass Observatory (11.75 m), separated by a sunken excavation and industrial gantry. Shared block data drives solid platform physics and rendering. Mast lights and route posts are decorative. Existing starter cargo positions remain approachable on foot.
+
+Mission contract: land within 3 m of both relay centers, secure at least 150 CR in cargo, and extract aboard before the five-minute deadline. HUD, map and world markers track the sites. Early salvage extraction remains allowed; the contract is a per-sortie objective without an additional payout or persistent campaign unlock. Untimed practice uses the same level and grants no permanent rewards.
+
+Hold R (rebindable) for jetpack thrust; WASD steers, B/right mouse brakes, Space jumps, and Q retains two reserve bursts. Fuel capacity 100, drain 22/s, grounded recharge 18/s after 0.75 s without thrust. Release R to recharge. Lift acceleration is 9 × 80/(80 + carried kg) m/s² before gravity; climb is capped at 6 m/s and upward movement is limited above world Y=35. Jet steering target is 7 m/s multiplied by the carry-speed factor. Heavy cargo therefore reduces both lift and travel speed. Empty fuel means ballistic flight with existing air steering/braking; no fuel is regenerated in flight. Recall restores fuel. Visible plumes, synthesized thrust audio and a fuel gauge communicate state. Braced cargo placement now raycasts supporting surfaces, including raised decks.
+
+This is a first level slice, not a finished content campaign: no enemies, environmental damage, new biomes, online multiplayer, or research purchases were added. See [build 0.5 evidence](docs/production/BUILD_0.5.md).

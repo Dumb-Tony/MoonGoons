@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0 — Jetpack and Cinder Basin — 2026-09-24
+
+- Added held jetpack thrust, finite fuel, grounded recharge, load-dependent lift, plumes, audio and fuel HUD.
+- Authored elevated relay platforms, mineral mesas, a sunken excavation, route lights and survey markers in the approved world style.
+- Added a two-relay / 150 CR sortie contract and clear partial-salvage results.
+- Braced set-down now respects raised supporting surfaces. Extraction aboard requires being near ground level.
+- Added depletion/recharge and complete physical survey-route tests; extended the three-resource route through the full contract.
+
 ## 0.4.0 — Scientist and handling — 2026-09-24
 
 - Preserved the approved world art direction as the baseline for future levels.

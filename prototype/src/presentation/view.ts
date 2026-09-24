@@ -10,7 +10,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
 import { textures, painted, stone, fabric, glow } from './materials';
-import {RESOURCES,terrainHeight,type Kind} from '../content/config';
+import {RESOURCES,terrainHeight,LEVEL_BLOCKS,SURVEY_SITES,type Kind} from '../content/config';
 import type {Moon} from '../simulation/moon';
 
 const mat=(color:number,roughness=.62,metalness=.22)=>painted(color,roughness,metalness);
@@ -36,7 +36,7 @@ export class View {
     const geo=new T.PlaneGeometry(120,120,80,80);geo.rotateX(-Math.PI/2);const attr=geo.attributes.position;const colors=[];
     for(let i=0;i<attr.count;i++){const x=attr.getX(i),z=attr.getZ(i),y=terrainHeight(x,z);attr.setY(i,y);const band=(Math.sin(x*.11+z*.055)+Math.cos(z*.14))*.25+.5;const c=new T.Color(0xc0a9b1).lerp(new T.Color(0xa8c4ca),band);c.lerp(new T.Color(0xe7b58c),Math.max(0,y*.14));colors.push(c.r,c.g,c.b);}
     geo.setAttribute('color',new T.Float32BufferAttribute(colors,3));geo.computeVertexNormals();this.terrain=new T.Mesh(geo,new T.MeshStandardMaterial({vertexColors:true,map:textures().map,bumpMap:textures().bump,bumpScale:.18,roughness:.96,metalness:.035}));this.terrain.receiveShadow=true;this.scene.add(this.terrain);this.occluders.push(this.terrain);
-    this.makeSky();this.makeShip();this.makeLandscape();this.makeAvatar();this.makeDetails();
+    this.makeSky();this.makeShip();this.makeLandscape();this.makeLevel();this.makeAvatar();this.makeDetails();
     this.scene.add(this.sampleRoot,this.avatar);
     this.scanRing=new T.Mesh(new T.RingGeometry(.97,1,100),new T.MeshBasicMaterial({color:0x78edef,transparent:true,opacity:.6,side:T.DoubleSide,depthWrite:false}));this.scanRing.rotation.x=-Math.PI/2;this.scanRing.visible=false;this.scene.add(this.scanRing);
     this.beam=new T.Line(new T.BufferGeometry().setFromPoints([new T.Vector3(),new T.Vector3()]),new T.LineBasicMaterial({color:0xffd98a,transparent:true,opacity:.9}));this.scene.add(this.beam);
@@ -88,6 +88,20 @@ export class View {
     for(let i=0;i<9;i++){const z=5+i*1.2;for(const x of [-1.4,1.4]){const strip=box(this.scene,.42,.025,.10,0xebc475,x,terrainHeight(x,z)+.035,z);strip.material=glow(i%3===0?0x74cfcc:0xffba65,1.8);strip.castShadow=false;}}
     for(const [x,z] of [[-7,8],[7,8],[-12,-8],[11,-8]]){const y=terrainHeight(x,z);cylinder(this.scene,.04,.06,2.5,0x354954,x,y+1.25,z);const flag=box(this.scene,.95,.5,.03,0xeb9960,x+.45,y+2.2,z);flag.rotation.y=.4;}
     const pad=new T.Mesh(new T.RingGeometry(10.6,10.75,80),new T.MeshBasicMaterial({color:0xc0b695,transparent:true,opacity:.55,side:T.DoubleSide}));pad.rotation.x=-Math.PI/2;pad.position.y=.04;this.scene.add(pad);
+  }
+  makeLevel(){
+    for(const b of LEVEL_BLOCKS){const m=box(this.scene,b.w,b.h,b.d,b.color,b.x,b.y,b.z);this.occluders.push(m);}
+    for(const site of SURVEY_SITES){
+      for(const dx of [-3,3])for(const dz of [-2.5,2.5]){const m=box(this.scene,.2,.12,.65,0x89e8df,site.x+dx,site.y+.1,site.z+dz);m.material=glow(0x71e7d2,2.5);}
+      cylinder(this.scene,.12,.2,4,0xe5bb79,site.x+2.8,site.y+2,site.z-2.5,12);
+      const lamp=box(this.scene,.6,.4,.6,0xfbc775,site.x+2.8,site.y+4,site.z-2.5);lamp.material=glow(0xffc078,1.5);
+      const sign=new T.Mesh(new T.PlaneGeometry(4,.6),label(site.name.toUpperCase(),512,96));sign.position.set(site.x,site.y+2.1,site.z-2.5);this.scene.add(sign);
+      const disc=new T.Mesh(new T.RingGeometry(1.8,2,64),glow(0x7addd0,1.4));disc.rotation.x=-Math.PI/2;disc.position.set(site.x,site.y+.03,site.z);this.scene.add(disc);
+    }
+    // Guide lights follow the actual ground and lead around the hull to each ascent.
+    for(const side of [-1,1])for(let i=0;i<10;i++){const x=side*(9+i*1.2),z=5-i*3;const h=terrainHeight(x,z);cylinder(this.scene,.06,.09,.8,0x314b59,x,h+.4,z,8);const lamp=box(this.scene,.15,.12,.15,0x8ae9df,x,h+.85,z);lamp.material=glow(side<0?0xffc078:0x79e5db,2);}
+    for(const x of [-5,5]){const y=terrainHeight(x,-29);cylinder(this.scene,.2,.3,8,0xc89965,x,y+4,-29,12);box(this.scene,.7,.5,1,0x589e9d,x,y+7,-29);}
+    const beam=box(this.scene,10,.35,.35,0xc89965,0,5,-29);beam.rotation.z=.08;
   }
   inspectSuit=false;
   pilot!:Astronaut;

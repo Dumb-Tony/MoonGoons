@@ -2,17 +2,18 @@
 
 **A small moon. A big haul. A deeply unqualified scientist.**
 
-Browser-first cooperative physics extraction game. The current **0.4 solo field test** is playable; online co-op remains a later milestone.
+Browser-first cooperative physics extraction game. The current **0.5 solo field test** is playable; online co-op remains a later milestone.
 
 ## Play
 
 [Play Moon Goons](https://dumb-tony.github.io/MoonGoons/)
 
-Choose a five-minute sortie or untimed practice. Scan and drill deposits, carry the freed cargo into the ship's striped bay, release it, and let it settle. Only secured cargo earns credits and research. Practice does not award permanent progress.
+Explore Cinder Basin in a five-minute sortie or untimed practice. Land at both elevated survey relays and secure 150 CR to complete the sortie contract. Scan and drill deposits, carry the freed cargo into the ship's striped bay, release it, and let it settle. Only secured cargo earns credits and research. Practice does not award permanent progress.
 
 | Action | Default |
 |---|---|
 | Move / look | WASD / mouse; right-drag or arrows if mouse capture is unavailable |
+| Jetpack | Hold R; WASD steers; land and release R to recharge |
 | Jump / sprint | Space / Shift |
 | Grab or release | E |
 | Drill | Hold left mouse with drill equipped |
@@ -43,7 +44,7 @@ The app uses pinned TypeScript, Three.js, Rapier, and Vite packages. Static prod
 
 - [Game Design Bible](GAME_DESIGN_BIBLE.md) — primary design reference and long-term gates.
 - [Production GDD](GDD.md) — requirements, current scope, and acceptance criteria.
-- [Build verification](docs/production/BUILD_0.4.md) — what was tested and what remains unproven.
+- [Build verification](docs/production/BUILD_0.5.md) — what was tested and what remains unproven.
 - [Backlog](docs/production/BACKLOG.md) — next milestones.
 - [Sources and assets](docs/reference/SOURCES_AND_ASSETS.md) — provenance and licensing.
 

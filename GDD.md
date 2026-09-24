@@ -214,3 +214,8 @@ Derived from the bible's 0.3 implementation record: textured surfaces, expanded 
 ## 0.4 character and handling
 
 Retain the user-approved 0.3 world art style in all future levels, as recorded in the bible. Implemented character rig adds separate elbow/knee joints, layered suit equipment, a visible visor, hand-mounted drill and thruster feedback. Bracing applies horizontal air braking without hover; on the ground it lowers/stabilizes cargo. Braced release reduces residual horizontal velocity and spin. Scanner radius is now 24 m. Existing movement speeds, jump height, burst charges, cargo payouts and save schema remain unchanged. Acceptance evidence: [build 0.4](docs/production/BUILD_0.4.md).
+
+
+## 0.5 implemented expedition slice
+
+The bible's 0.5 record supersedes the Practice Moon-only first-map scope and reserved R binding for this browser build. Cinder Basin adds a shared collision/render platform layout, two elevated survey landings, route lights, a north excavation and a per-sortie 150 CR contract. Hold R to fly; land/release to recharge. Mass-dependent lift, limited fuel, the existing reserve burst and bracing support return-route decisions. Contract completion requires both surveys, secured value and extraction aboard; partial salvage remains payable. No additional contract reward or persistent completion flag is promised. [Validation](docs/production/BUILD_0.5.md).
